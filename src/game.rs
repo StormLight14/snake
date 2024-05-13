@@ -100,7 +100,19 @@ impl Game {
     }
     pub fn create_apple(&mut self) {
         let mut rng = thread_rng();
-        self.apples.push(Apple::new(Position::new(rng.gen_range(0..self.level_grid.len()) as u8, rng.gen_range(0..self.level_grid.len()) as u8)));
+        let mut rand_x: u8;
+        let mut rand_y: u8;
+
+        loop {
+            rand_x = rng.gen_range(0..self.level_grid.len()) as u8;
+            rand_y = rng.gen_range(0..self.level_grid.len()) as u8;
+
+            let pos = Position::new(rand_x, rand_y);
+            if pos != self.snake.head_pos && self.snake.tail_pos.contains(&pos) == false {
+                self.apples.push(Apple::new(pos));
+                break;
+            }
+        }
     }
 }
 
