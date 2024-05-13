@@ -9,13 +9,14 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode},
 };
 
-use level::Level;
+use game::Game;
 
-pub mod level;
+pub mod game;
 pub mod square;
+pub mod apple;
 pub mod snake;
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Position {
     x: u8,
     y: u8
@@ -38,18 +39,22 @@ pub enum Direction {
     Down
 }
 
-#[tokio::main]
-async fn main() -> io::Result<()> {
+fn main() -> io::Result<()> {
     enable_raw_mode()?;
-    let mut level = Level::new();
+    let mut game = Game::new();
 
     loop {
         let stdout = stdout();
-        level.print_grid(stdout)?;
-        thread::sleep(Duration::from_secs_f32(0.1));
-        read_input(&mut level).unwrap();
-        level.move_snake();
-        if level.head_hit_tail() {
+
+        game.print_grid(stdout)?;
+        thread::sleep(Duration::from_secs_f32(0.2));
+        read_input(&mut game).unwrap();
+        if game.move_snake() == false {
+            exit_game(Some("\nYou Lost!"));
+        };
+        game.eat_apple();
+        game.update_grid();
+        if game.head_hit_tail() {
             exit_game(Some("\nYou lost!"));
         }
     }
@@ -63,11 +68,9 @@ fn exit_game(message: Option<&str>) {
     std::process::exit(0);
 }
 
-fn read_input(level: &mut Level) -> io::Result<()> {
-    if let Ok(has_event) = poll(Duration::from_secs_f32(0.05)) {
-        if has_event == false {
-            return Ok(())
-        }
+fn read_input(game: &mut Game) -> io::Result<()> {
+    if let Ok(true) = poll(Duration::from_millis(10)) {
+
         let event = read()?;
         match event {
             Event::Key(event) if event.kind == KeyEventKind::Press => {
@@ -75,15 +78,18 @@ fn read_input(level: &mut Level) -> io::Result<()> {
                     KeyCode::Esc | KeyCode::Char('q')  => {
                         exit_game(None);
                     },
-                    KeyCode::Left | KeyCode::Char('a') => level.snake.direction = Direction::Left,
-                    KeyCode::Right | KeyCode::Char('d') => level.snake.direction = Direction::Right,
-                    KeyCode::Up | KeyCode::Char('w') => level.snake.direction = Direction::Up,
-                    KeyCode::Down | KeyCode::Char('s') => level.snake.direction = Direction::Down,
-                    _ => {}
+                    KeyCode::Left | KeyCode::Char('a') => game.snake.direction = Direction::Left,
+                    KeyCode::Right | KeyCode::Char('d') => game.snake.direction = Direction::Right,
+                    KeyCode::Up | KeyCode::Char('w') => game.snake.direction = Direction::Up,
+                    KeyCode::Down | KeyCode::Char('s') => game.snake.direction = Direction::Down,
+                    _ => {
+                    }
                 }
             },
-                _ => {}
+            _ => {
+            }
         }
     }
+
     Ok(())
 }

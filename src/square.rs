@@ -10,9 +10,9 @@ pub enum Square {
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let square_char = match self {
-            Square::Empty => '#',
+            Square::Empty => ' ',
             Square::Snake => 'S',
-            Square::Apple => 'A'
+            Square::Apple => 'O'
         };
         write!(f, "{}", square_char)
     }
