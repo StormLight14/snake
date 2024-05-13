@@ -4,7 +4,7 @@ use crate::apple::Apple;
 use crate::{Direction, Position};
 use rand::{Rng, thread_rng};
 use std::io::{self, Write};
-use crossterm::{ExecutableCommand, QueueableCommand, terminal, cursor, style::{self, Stylize}};
+use crossterm::{QueueableCommand, cursor, style::{self, Stylize}};
 
 const LEVEL_SIZE: u8 = 18;
 
