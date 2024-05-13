@@ -2,8 +2,7 @@ use crate::square::Square;
 use crate::snake::Snake;
 use crate::apple::Apple;
 use crate::{Direction, Position};
-use std::thread;
-use std::time::Duration;
+use rand::{Rng, thread_rng};
 use std::io::{self, Write};
 use crossterm::{ExecutableCommand, QueueableCommand, terminal, cursor, style::{self, Stylize}};
 
@@ -58,8 +57,10 @@ impl Game {
             Direction::Left => (-1, 0),
             Direction::Right => (1, 0)
         };
-
-        self.snake.tail_pos.pop_front();
+        
+        if self.snake.just_ate_apple == false {
+            self.snake.tail_pos.pop_front();
+        } 
 
         let (to_x, to_y) = (self.snake.head_pos.x as i8 + translate_vector.0, self.snake.head_pos.y as i8 + translate_vector.1);
         if to_x >= 0 && to_x < self.level_grid.len() as i8 && to_y >= 0 && to_y < self.level_grid[0].len() as i8 {
@@ -80,6 +81,8 @@ impl Game {
         return false;
     }
     pub fn eat_apple(&mut self) {
+        self.snake.just_ate_apple = false;
+
         let mut remove_apple = None;
         for (i, apple) in self.apples.iter_mut().enumerate() {
             if self.snake.head_pos == apple.pos {
@@ -89,7 +92,15 @@ impl Game {
 
         if let Some(remove_apple) = remove_apple {
             self.apples.remove(remove_apple);
+            self.snake.just_ate_apple = true;
+        
+            self.create_apple();
         }
+        
+    }
+    pub fn create_apple(&mut self) {
+        let mut rng = thread_rng();
+        self.apples.push(Apple::new(Position::new(rng.gen_range(0..self.level_grid.len()) as u8, rng.gen_range(0..self.level_grid.len()) as u8)));
     }
 }
 
