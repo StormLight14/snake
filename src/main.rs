@@ -5,8 +5,10 @@ use std::time::Duration;
 
 use crossterm::event::KeyEventKind;
 use crossterm::{
+    ExecutableCommand, execute,
     event::{read, poll, Event, KeyCode},
-    terminal::{disable_raw_mode, enable_raw_mode},
+    terminal::{self, disable_raw_mode, enable_raw_mode},
+    cursor::Hide
 };
 
 use game::Game;
@@ -42,6 +44,7 @@ pub enum Direction {
 fn main() -> io::Result<()> {
     enable_raw_mode()?;
     let mut game = Game::new();
+    execute!(io::stdout(), Hide, terminal::Clear(terminal::ClearType::All))?;
 
     loop {
         let stdout = stdout();

@@ -4,7 +4,8 @@ use std::fmt;
 pub enum Square {
     Empty,
     Snake,
-    Apple
+    Apple,
+    Border
 }
 
 impl fmt::Display for Square {
@@ -12,7 +13,8 @@ impl fmt::Display for Square {
         let square_char = match self {
             Square::Empty => ' ',
             Square::Snake => 'S',
-            Square::Apple => 'O'
+            Square::Apple => 'O',
+            Square::Border => '□' //■
         };
         write!(f, "{}", square_char)
     }

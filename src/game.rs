@@ -24,14 +24,15 @@ impl Game {
         }
     }
     pub fn print_grid(&self, mut stdout: std::io::Stdout) -> io::Result<()> {
-        stdout.execute(terminal::Clear(terminal::ClearType::All))?;
+        //stdout.execute(terminal::Clear(terminal::ClearType::All))?;
         for y in 0..self.level_grid.len() {
             for x in 0..self.level_grid[y].len() {
                 let square = &self.level_grid[y][x];
                 let styled_content = match square {
                     Square::Apple => format!("{}", square).red().bold(),
                     Square::Snake => format!("{}", square).green().bold().bold(),
-                    Square::Empty => format!("{}", square).blue(),
+                    Square::Empty => format!("{}", square).white(),
+                    Square::Border => format!("{}", square).blue(),
                 };
                 stdout.queue(cursor::MoveTo((x as u16) * 2, y as u16))?.queue(style::PrintStyledContent(styled_content))?;
             }
@@ -118,10 +119,14 @@ impl Game {
 
 pub fn empty_grid(size: u8) -> Vec<Vec<Square>> {
     let mut grid: Vec<Vec<Square>> = Vec::new();
-    for _y in 0..size {
+    for y in 0..size {
         let mut row: Vec<Square> = Vec::new();
-        for _x in 0..size {
-            row.push(Square::Empty);
+        for x in 0..size {
+            if y == 0 || x == 0 || y == size - 1 || x == size - 1 {
+                row.push(Square::Border);
+            } else {
+                row.push(Square::Empty);
+            }
         }
         grid.push(row);
     }
