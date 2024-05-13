@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum Square {
     Empty,
     Snake,
@@ -14,7 +14,7 @@ impl fmt::Display for Square {
             Square::Empty => ' ',
             Square::Snake => 'S',
             Square::Apple => 'O',
-            Square::Border => '□' //■
+            Square::Border => '□' // ■
         };
         write!(f, "{}", square_char)
     }

@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use crossterm::event::KeyEventKind;
 use crossterm::{
-    ExecutableCommand, execute,
+    execute,
     event::{read, poll, Event, KeyCode},
     terminal::{self, disable_raw_mode, enable_raw_mode},
     cursor::Hide

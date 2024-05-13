@@ -67,7 +67,9 @@ impl Game {
         if to_x >= 0 && to_x < self.level_grid.len() as i8 && to_y >= 0 && to_y < self.level_grid[0].len() as i8 {
             self.snake.tail_pos.push_back(self.snake.head_pos);
             self.snake.head_pos = Position::new(to_x as u8, to_y as u8);
-        } else {
+        }
+        
+        if self.level_grid[self.snake.head_pos.y as usize][self.snake.head_pos.x as usize] == Square::Border {
             return false;
         }
 
@@ -105,8 +107,8 @@ impl Game {
         let mut rand_y: u8;
 
         loop {
-            rand_x = rng.gen_range(0..self.level_grid.len()) as u8;
-            rand_y = rng.gen_range(0..self.level_grid.len()) as u8;
+            rand_x = rng.gen_range(1..self.level_grid.len() - 1) as u8;
+            rand_y = rng.gen_range(1..self.level_grid.len() - 1) as u8;
 
             let pos = Position::new(rand_x, rand_y);
             if pos != self.snake.head_pos && self.snake.tail_pos.contains(&pos) == false {
