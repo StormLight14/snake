@@ -50,7 +50,7 @@ fn main() -> io::Result<()> {
         let stdout = stdout();
 
         game.print_grid(stdout)?;
-        thread::sleep(Duration::from_secs_f32(0.2));
+        thread::sleep(Duration::from_secs_f32(0.15));
         read_input(&mut game).unwrap();
         if game.move_snake() == false {
             exit_game(Some("\nYou Lost!"));
