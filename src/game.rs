@@ -78,10 +78,8 @@ impl Game {
         true
     }
     pub fn head_hit_tail(&self) -> bool {
-        for pos in self.snake.tail_pos.iter() {
-            if *pos == self.snake.head_pos {
-                return true;
-            }
+        if self.snake.tail_pos.contains(&self.snake.head_pos) {
+            return true;
         }
         false
     }
