@@ -25,7 +25,7 @@ impl Game {
             score: 0,
         }
     }
-    pub fn print_grid(&self, mut stdout: std::io::Stdout) -> io::Result<()> {
+    pub fn print_game(&self, mut stdout: std::io::Stdout) -> io::Result<()> {
         //stdout.execute(terminal::Clear(terminal::ClearType::All))?;
         for y in 0..self.level_grid.len() {
             for x in 0..self.level_grid[y].len() {
@@ -39,6 +39,10 @@ impl Game {
                 stdout.queue(cursor::MoveTo((x as u16) * 2, y as u16))?.queue(style::PrintStyledContent(styled_content))?;
             }
         }
+        for (x, character) in format!("Score: {}", self.score).chars().enumerate() {
+            stdout.queue(cursor::MoveTo(x as u16, self.level_grid.len() as u16))?.queue(style::PrintStyledContent(character.white()))?;
+        }
+        
         stdout.flush()?;
         Ok(())
     }
@@ -96,6 +100,7 @@ impl Game {
         if let Some(remove_apple) = remove_apple {
             self.apples.remove(remove_apple);
             self.snake.just_ate_apple = true;
+            self.score += 1;
         
             self.create_apple();
         }
