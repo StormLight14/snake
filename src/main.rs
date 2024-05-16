@@ -53,21 +53,20 @@ fn main() -> io::Result<()> {
         thread::sleep(Duration::from_secs_f32(0.15));
         read_input(&mut game).unwrap();
         if !game.move_snake() {
-            exit_game(Some("\nYou Lost!"), game.score);
+            exit_game(Some("\nYou Lost!"));
         };
         game.eat_apple();
         game.update_grid();
         if game.head_hit_tail() {
-            exit_game(Some("\nYou lost!"), game.score);
+            exit_game(Some("\nYou lost!"));
         }
     }
 }
 
-fn exit_game(message: Option<&str>, score: u16) {
+fn exit_game(message: Option<&str>) {
     disable_raw_mode().unwrap();
     if let Some(message) = message {
         println!("{}", message);
-        println!("Score: {}", score);
     }
     std::process::exit(0);
 }
@@ -80,7 +79,7 @@ fn read_input(game: &mut Game) -> io::Result<()> {
             Event::Key(event) if event.kind == KeyEventKind::Press => {
                 match event.code {
                     KeyCode::Esc | KeyCode::Char('q')  => {
-                        exit_game(None, game.score);
+                        exit_game(None);
                     },
                     KeyCode::Left | KeyCode::Char('a') => if game.snake.direction != Direction::Right {game.snake.direction = Direction::Left},
                     KeyCode::Right | KeyCode::Char('d') => if game.snake.direction != Direction::Left {game.snake.direction = Direction::Right},
