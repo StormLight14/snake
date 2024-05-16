@@ -13,6 +13,7 @@ pub struct Game {
     pub level_grid: Vec<Vec<Square>>,
     pub snake: Snake,
     pub apples: Vec<Apple>,
+    pub score: u16,
 }
 
 impl Game {
@@ -20,7 +21,8 @@ impl Game {
         Game {
             level_grid: empty_grid(LEVEL_SIZE),
             snake: Snake::new(),
-            apples: vec![Apple::new(Position::new(10, 10))]
+            apples: vec![Apple::new(Position::new(10, 10))],
+            score: 0,
         }
     }
     pub fn print_grid(&self, mut stdout: std::io::Stdout) -> io::Result<()> {
@@ -59,7 +61,7 @@ impl Game {
             Direction::Right => (1, 0)
         };
         
-        if self.snake.just_ate_apple == false {
+        if !self.snake.just_ate_apple {
             self.snake.tail_pos.pop_front();
         } 
 
@@ -81,7 +83,7 @@ impl Game {
                 return true;
             }
         }
-        return false;
+        false
     }
     pub fn eat_apple(&mut self) {
         self.snake.just_ate_apple = false;
@@ -111,7 +113,7 @@ impl Game {
             rand_y = rng.gen_range(1..self.level_grid.len() - 1) as u8;
 
             let pos = Position::new(rand_x, rand_y);
-            if pos != self.snake.head_pos && self.snake.tail_pos.contains(&pos) == false {
+            if pos != self.snake.head_pos && !self.snake.tail_pos.contains(&pos) {
                 self.apples.push(Apple::new(pos));
                 break;
             }
