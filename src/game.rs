@@ -4,6 +4,8 @@ use crate::apple::Apple;
 use crate::{Direction, Position};
 use rand::{Rng, thread_rng};
 use std::io::{self, Write};
+use std::thread;
+use std::time::Duration;
 use crossterm::{QueueableCommand, cursor, style::{self, Stylize}};
 
 const LEVEL_SIZE: u8 = 18;
