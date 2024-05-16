@@ -33,7 +33,7 @@ impl Position {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum Direction {
     Left,
     Right,
@@ -81,10 +81,10 @@ fn read_input(game: &mut Game) -> io::Result<()> {
                     KeyCode::Esc | KeyCode::Char('q')  => {
                         exit_game(None);
                     },
-                    KeyCode::Left | KeyCode::Char('a') => game.snake.direction = Direction::Left,
-                    KeyCode::Right | KeyCode::Char('d') => game.snake.direction = Direction::Right,
-                    KeyCode::Up | KeyCode::Char('w') => game.snake.direction = Direction::Up,
-                    KeyCode::Down | KeyCode::Char('s') => game.snake.direction = Direction::Down,
+                    KeyCode::Left | KeyCode::Char('a') => if game.snake.direction != Direction::Right {game.snake.direction = Direction::Left},
+                    KeyCode::Right | KeyCode::Char('d') => if game.snake.direction != Direction::Left {game.snake.direction = Direction::Right},
+                    KeyCode::Up | KeyCode::Char('w') => if game.snake.direction != Direction::Down {game.snake.direction = Direction::Up},
+                    KeyCode::Down | KeyCode::Char('s') => if game.snake.direction != Direction::Up {game.snake.direction = Direction::Down},
                     _ => {
                     }
                 }
